@@ -1,11 +1,14 @@
 # feel-bridge
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18880759.svg)](https://doi.org/10.5281/zenodo.18880759)
+
 **Hybrid analog-analog reservoir computing: bridging GPU firmware physics and memristive neuron dynamics on FPGA**
 
 This repository accompanies the preprint:
 
 > *Hybrid Analog–Analog Reservoir Computing: Bridging GPU Firmware Physics and Memristive Neuron Dynamics*
-> FEEL Research Project, March 2026
+> Eric Bergvall, ENIMBLE Solutions AB, March 2026
+> DOI: [10.5281/zenodo.18880759](https://doi.org/10.5281/zenodo.18880759)
 
 ## What is this?
 
