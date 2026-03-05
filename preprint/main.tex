@@ -246,22 +246,24 @@ UDP Ethernet bridge operating at 2\,kHz
 \begin{figure}[t]
 \centering
 \small
+{\scriptsize
 \begin{verbatim}
- GPU (AMD Radeon 8060S)         FPGA (Arty A7)
- +---------------------+  UDP   +------------------+
- | Application layer   | 2kHz   | 128 LIF neurons  |
- | - - - - - - - - - - |<=====>| NS-RAM avalanche |
- | HIP kernel jitter   |  ETH   | model (LFSR)     |
- | Firmware (SMN/SMU)  |        |                  |
- | VRM switching noise |        | Spike + Vmem     |
- | Silicon physics     |        | telemetry        |
- +---------------------+        +------------------+
-       | 4 noise layers              | 128 channels
-     +----------------------------------+
-     |   Reservoir readout (ridge)      |
-     |   Classification / regression    |
-     +----------------------------------+
+ GPU (Radeon 8060S)        FPGA (Arty A7)
+ +------------------+ UDP  +----------------+
+ | Application      | 2kHz | 128 LIF neurons|
+ | - - - - - - - -  |<===>| NS-RAM avalanch|
+ | Kernel jitter    | ETH  | model (LFSR)   |
+ | Firmware (SMN)   |      |                |
+ | VRM noise (1/f)  |      | Spike + Vmem   |
+ | Silicon physics  |      | telemetry      |
+ +------------------+      +----------------+
+      | 4 noise layers         | 128 channels
+    +------------------------------+
+    |  Reservoir readout (ridge)   |
+    |  Classification / regression |
+    +------------------------------+
 \end{verbatim}
+}
 \caption{System architecture.  The GPU contributes four
   sub-firmware analog noise layers; the FPGA provides 128
   spiking neurons.  A bidirectional UDP bridge at 2\,kHz
@@ -437,17 +439,18 @@ spike-count features.
 
 \begin{table}[t]
 \centering
-\caption{Waveform classification accuracy by scale and noise condition.}
+\small
+\caption{Waveform classification accuracy by scale and noise.}
 \label{tab:classification}
-\begin{tabular}{@{}lccc@{}}
+\begin{tabular}{@{}lrrl@{}}
 \toprule
-Configuration & Neurons & Accuracy & Reference \\
+Configuration & $N$ & Acc. & Ref. \\
 \midrule
-Single-channel, $1/f$ & 8 & 66.4\% & \expt{2162} \\
-Multi-channel noise & 8 & 75.9\% & \expt{2165} \\
-128-neuron, full noise & 128 & 81.0\% & \expt{2206} \\
-128-neuron, homogeneous & 128 & 81.5\% & \expt{2206} \\
-7-level ladder, fusion & 128 & 91.5\% & \expt{2210} \\
+Single $1/f$ & 8 & 66.4\% & \expt{2162} \\
+Multi-channel & 8 & 75.9\% & \expt{2165} \\
+Full noise & 128 & 81.0\% & \expt{2206} \\
+Homogeneous & 128 & 81.5\% & \expt{2206} \\
+Deep fusion & 128 & 91.5\% & \expt{2210} \\
 \bottomrule
 \end{tabular}
 \end{table}
