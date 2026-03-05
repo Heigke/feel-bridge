@@ -1,0 +1,34 @@
+# Build artifacts
+*.bit
+*.bin
+*.jou
+*.log
+*.pb
+*.sdb
+*.rlx
+.Xil/
+xsim.dir/
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+venv/
+.venv/
+
+# LaTeX
+*.aux
+*.bbl
+*.blg
+*.out
+*.toc
+*.synctex.gz
+
+# OS
+.DS_Store
+._*
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
