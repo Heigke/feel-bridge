@@ -39,11 +39,12 @@ The system is designed as a **hardware-substitution platform**: the FPGA neuron 
 | Metric | Value | Experiment |
 |--------|-------|------------|
 | **GPU HIP 4-class waveform** | **98.9%** | z2277 (real HIP kernel) |
-| **GPU HIP 8-class waveform** | **77.5%** | z2277 |
-| **GPU HIP Memory Capacity** | **2.888** | z2277 |
-| **GPU HIP XOR tau=1** | **96.9%** | z2277 |
-| Bridge (GPU+FPGA) 4-class | 92.3% | z2277 |
-| Bridge XOR tau=1 | 96.1% | z2277 |
+| **GPU HIP 8-class waveform** | **77.6%** | z2277 |
+| **GPU HIP Memory Capacity** | **2.860** | z2277 |
+| **GPU HIP XOR tau=1** | **96.7%** | z2277 |
+| **Bridge NARMA-3 R²** | **0.616** (> GPU 0.605) | z2277 |
+| Bridge (GPU+FPGA) 4-class | 94.0% | z2277 |
+| Bridge XOR tau=1 | 96.3% | z2277 |
 | FPGA-only 128N classification | 81.0% | z2206 |
 | Branching ratio (criticality) | 1.027 (2.7% from critical) | z2191 |
 | Causal emergence ratio | 2.87x | z2188 |
