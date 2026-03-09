@@ -34,16 +34,46 @@ The system is designed as a **hardware-substitution platform**: the FPGA neuron 
      +----------------------------------+
 ```
 
-## Key results (from preprint)
+## Key results (from preprint + latest experiments)
 
 | Metric | Value | Experiment |
 |--------|-------|------------|
-| Waveform classification (128N) | 81.0% | z2206 |
+| **GPU HIP 4-class waveform** | **98.9%** | z2277 (real HIP kernel) |
+| **GPU HIP 8-class waveform** | **77.5%** | z2277 |
+| **GPU HIP Memory Capacity** | **2.888** | z2277 |
+| **GPU HIP XOR tau=1** | **96.9%** | z2277 |
+| Bridge (GPU+FPGA) 4-class | 92.3% | z2277 |
+| Bridge XOR tau=1 | 96.1% | z2277 |
+| FPGA-only 128N classification | 81.0% | z2206 |
 | Branching ratio (criticality) | 1.027 (2.7% from critical) | z2191 |
 | Causal emergence ratio | 2.87x | z2188 |
 | Transfer entropy (GPU->FPGA) | 0.122 bits | z2190 |
 | Best fusion accuracy (7-level ladder) | 91.5% | z2210 |
 | Energy per spike (FPGA) | ~fJ | z2166 |
+
+### GPU-physics reservoir (4 populations)
+
+The GPU reservoir exploits 4 distinct hardware mechanisms as computational primitives:
+
+| Population | Hardware mechanism | Computational role |
+|------------|-------------------|-------------------|
+| Pop A | Branch divergence (warp path splitting) | Threshold neurons, classification |
+| Pop B | LDS bank conflicts + product nonlinearity | XOR, nonlinear mixing |
+| Pop C | Dense ESN with temperature-scaled tanh | Temporal memory (NARMA) |
+| Pop D | Wavefront scheduling jitter (__clock64) | Stochastic diversity |
+
+These are **not simulated** — each mechanism exploits real analog physics of the GPU silicon. See `examples/gpu_reservoir_demo.hip` for a runnable demo.
+
+### Experiment scale
+
+280+ tests across 70+ experiment groups, including:
+- Waveform classification (4-class, 8-class)
+- Memory capacity at 10 delays
+- Temporal XOR at tau=1,2,3
+- NARMA regression (orders 3, 5, 10)
+- Transfer entropy and Granger causality
+- Scaling laws (8N to 128N)
+- Cross-substrate causal coupling analysis
 
 ## Repository structure
 
@@ -64,7 +94,9 @@ scripts/
   fpga_host_eth.py      # Python UDP bridge — connect, configure, read telemetry
 
 examples/
-  reservoir_demo.py     # Minimal waveform classification demo
+  reservoir_demo.py         # Minimal FPGA waveform classification demo
+  gpu_reservoir_demo.hip    # GPU-physics reservoir (4-population HIP kernel)
+  benchmark_battery.py      # Standard RC benchmark suite (MC, XOR, NARMA, waveform)
 
 preprint/
   main.tex              # LaTeX source
@@ -86,9 +118,24 @@ preprint/
 pip install numpy scikit-learn
 ```
 
-### Quick start
+### Quick start — GPU reservoir (no FPGA needed)
 
-1. **Program the FPGA** (requires Vivado):
+```bash
+# Build the GPU reservoir demo (requires ROCm/HIP)
+cd examples
+hipcc -O2 -o gpu_reservoir_demo gpu_reservoir_demo.hip
+
+# Run (AMD gfx11 needs HSA override)
+HSA_OVERRIDE_GFX_VERSION=11.0.0 ./gpu_reservoir_demo
+
+# Or run the benchmark battery in simulation mode (no hardware)
+pip install numpy scikit-learn
+python benchmark_battery.py --sim
+```
+
+### Quick start — FPGA reservoir
+
+1. **Program the FPGA** (requires Vivado + Arty A7):
    ```bash
    source /path/to/Vivado/settings64.sh
    vivado -mode batch -source fpga/scripts/build_eth.tcl
@@ -117,10 +164,11 @@ pip install numpy scikit-learn
    fpga.close()
    ```
 
-3. **Run the demo**:
+3. **Run the demos**:
    ```bash
    cd examples
-   python reservoir_demo.py
+   python reservoir_demo.py            # FPGA classification demo
+   python benchmark_battery.py --fpga  # Full benchmark suite on FPGA
    ```
 
 ## FPGA neuron model
